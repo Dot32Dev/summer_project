@@ -1,0 +1,8 @@
+x64/
+libraries/
+glfw3.dll
+glew32.dll
+
+# Visual studio cache files
+ipch/
+*.opendb
