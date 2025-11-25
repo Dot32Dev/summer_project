@@ -48,17 +48,38 @@ int main() {
 	glViewport(0, 0, bufferWidth, bufferHeight);
 
 	// Triangle
-	float vertices[] = {
+	float tri_vertices[] = {
 		-0.5, -0.5, 0.0,
 		0.5,  -0.5, 0.0,
 		0.0,  0.5,  0.0,
+	};
+	unsigned int tri_indices[] {
+		0, 1, 2,
+	};
+
+	// Square
+	float square_vertices[] = {
+		0.5, 0.5, 0.0, // Top right
+		0.5, -0.5, 0.0, // Bottom right
+		-0.5, -0.5, 0.0, // Bottom left
+		-0.5, 0.5, 0.0 // Top left
+	};
+	unsigned int square_indices[] {
+		0, 1, 3,
+		1, 2, 3
 	};
 
 	// Vertex buffer
 	unsigned int vert_buff_id;
 	glGenBuffers(1, &vert_buff_id);
 	glBindBuffer(GL_ARRAY_BUFFER, vert_buff_id);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(tri_vertices), tri_vertices, GL_STATIC_DRAW);
+
+	// Index buffer
+	unsigned int element_buffer_id;
+	glGenBuffers(1, &element_buffer_id);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_buffer_id);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(tri_indices), tri_indices, GL_STATIC_DRAW);
 
 	// Load shader strings
 	ifstream file("vert.glsl");
@@ -116,6 +137,7 @@ int main() {
 	glGenVertexArrays(1, &vert_array_id);
 	glBindVertexArray(vert_array_id);
 	glBindBuffer(GL_ARRAY_BUFFER, vert_buff_id);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_buffer_id);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
@@ -125,7 +147,8 @@ int main() {
 		glClearColor(0.0, 0.0, 0.0, 1.0);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+
+		glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
 
 		glfwSwapBuffers(window);		
 	}
