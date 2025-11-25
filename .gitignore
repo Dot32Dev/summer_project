@@ -7,3 +7,4 @@ glew32.dll
 ipch/
 *.opendb
 .vs/
+.vscode/
