@@ -75,6 +75,8 @@ Shader::Shader(const string& vertex_path, const string& fragment_path) {
     }
 }
 
+Shader::Shader() {}
+
 void Shader::use() {
 	glUseProgram(program_id);
 }

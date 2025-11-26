@@ -1,14 +1,10 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <string>
+#include <vector>
 #include "shader.h"
+#include "mesh.h"
 
-using std::ifstream;
-using std::stringstream;
-using std::string;
+using std::vector;
 
 const GLint WIDTH = 1280;
 const GLint HEIGHT = 720;
@@ -42,60 +38,34 @@ int main() {
 		glfwDestroyWindow(window);
 		glfwTerminate();
 	}
-	
 
 	glViewport(0, 0, bufferWidth, bufferHeight);
 
-	// Triangle
-	float tri_vertices[] = {
-		// Positions     // UVs
-		0.5,  -0.5, 0.0, 0.5,  -0.5, // Bottom right
-		-0.5, -0.5, 0.0, -0.5, -0.5, // Bottom left
-		0.0,  0.5,  0.0, 0.0,  0.5   // Top
-	};
-	unsigned int tri_indices[] {
-		0, 1, 2,
-	};
-
 	// Square
-	float square_vertices[] = {
+	vector<float> square_vertices = {
 		// Positions     // UVs
-		 0.5,  0.5, 0.0,  0.5,  0.5, // Top right
-		 0.5, -0.5, 0.0,  0.5, -0.5, // Bottom right
-		-0.5, -0.5, 0.0, -0.5, -0.5, // Bottom left
-		-0.5,  0.5, 0.0  -0.5,  0.5  // Top left
+		 0.5 + 0.1,  0.5 + 0.1, 0.0 + 0.1,  0.5 + 0.1,  0.5 + 0.1, // Top right
+		 0.5 + 0.1, -0.5 + 0.1, 0.0 + 0.1,  0.5 + 0.1, -0.5 + 0.1, // Bottom right
+		-0.5 + 0.1, -0.5 + 0.1, 0.0 + 0.1, -0.5 + 0.1, -0.5 + 0.1, // Bottom left
+		-0.5 + 0.1,  0.5 + 0.1, 0.0 + 0.1, -0.5 + 0.1,  0.5 + 0.1  // Top left
 	};
-	unsigned int square_indices[] {
+	vector<unsigned int> square_indices = {
 		0, 1, 3,
 		1, 2, 3
 	};
+	Mesh square(square_vertices, square_indices);
 
-	// Vertex buffer
-	unsigned int vert_buff_id;
-	glGenBuffers(1, &vert_buff_id);
-	glBindBuffer(GL_ARRAY_BUFFER, vert_buff_id);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(tri_vertices), tri_vertices, GL_STATIC_DRAW);
-
-	// Index buffer
-	unsigned int element_buffer_id;
-	glGenBuffers(1, &element_buffer_id);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_buffer_id);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(tri_indices), tri_indices, GL_STATIC_DRAW);
+	// Triangle
+	vector<float> tri_vertices = {
+		// Positions     // UVs
+		 0.5, -0.5, 0.0,  0.5, -0.5, // Bottom right
+		-0.5, -0.5, 0.0, -0.5, -0.5, // Bottom left
+		 0.0,  0.5, 0.0,  0.0,  0.5  // Top
+	};
+	Mesh triangle(tri_vertices);
 
 	Shader shader("vert.glsl", "frag.glsl");
 	shader.use();
-
-	// VAO 
-	unsigned int vert_array_id;
-	glGenVertexArrays(1, &vert_array_id);
-	glBindVertexArray(vert_array_id);
-	glBindBuffer(GL_ARRAY_BUFFER, vert_buff_id);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_buffer_id);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
 
 	Uniform uniform = shader.get_uniform("our_colour");
 
@@ -104,14 +74,16 @@ int main() {
 		glClearColor(0.0, 0.0, 0.0, 1.0);
 		glClear(GL_COLOR_BUFFER_BIT);
 
+		uniform.send(1.0f, 0.5f, 0.2f, 1.0f);
+		square.draw();
+
 		// Uniform (assumes correct shader program bound)
 		float time = glfwGetTime();
 		float greeness = (sin(time) / 2.0) + 0.5;
 		float blueness = (cos(time) / 2.0) + 0.5;
 		uniform.send(0.0, greeness, blueness, 1.0);
 
-		// Assumes correct program and VAO bound
-		glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
+		triangle.draw();
 
 		glfwSwapBuffers(window);		
 	}
