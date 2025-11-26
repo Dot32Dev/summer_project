@@ -1,11 +1,10 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-
-// For loading the shader files
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <string>
+#include "shader.h"
 
 using std::ifstream;
 using std::stringstream;
@@ -83,56 +82,8 @@ int main() {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_buffer_id);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(tri_indices), tri_indices, GL_STATIC_DRAW);
 
-	// Load shader strings
-	ifstream file("vert.glsl");
-	stringstream buffer;
-	buffer << file.rdbuf();
-	string vert_string = buffer.str();
-	const char* vert_chars = vert_string.c_str();
-	file.close();
-	file = ifstream("frag.glsl");
-	buffer = stringstream();
-	buffer << file.rdbuf();
-	string frag_string = buffer.str();
-	const char* frag_chars = frag_string.c_str();
-	file.close();
-
-	// Load/compile shaders
-	unsigned int vert_shader_id;
-	vert_shader_id = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vert_shader_id, 1, &vert_chars, NULL);
-	glCompileShader(vert_shader_id);
-	int success;
-    glGetShaderiv(vert_shader_id, GL_COMPILE_STATUS, &success);
-    if (!success) {
-        char infoLog[1024]; glGetShaderInfoLog(vert_shader_id, 1024, NULL, infoLog);
-        std::cerr << "VERTEX SHADER COMPILE ERROR:\n" << infoLog << '\n';
-    }
-
-	unsigned int frag_shader_id;
-	frag_shader_id = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(frag_shader_id, 1, &frag_chars, NULL);
-	glCompileShader(frag_shader_id);
-	if (!success) {
-        char infoLog[1024]; glGetShaderInfoLog(frag_shader_id, 1024, NULL, infoLog);
-        std::cerr << "FRAGMENT SHADER COMPILE ERROR:\n" << infoLog << '\n';
-    }
-
-	// Put them together for the shader program
-	unsigned int program_id;
-	program_id = glCreateProgram();
-	glAttachShader(program_id, vert_shader_id);
-	glAttachShader(program_id, frag_shader_id);
-	glLinkProgram(program_id);
-	glGetProgramiv(program_id, GL_LINK_STATUS, &success);
-    if (!success) {
-        char infoLog[1024]; glGetProgramInfoLog(program_id, 1024, NULL, infoLog);
-        std::cerr << "SHADER PROGRAM LINK ERROR:\n" << infoLog << '\n';
-    }
-
-	glDeleteShader(vert_shader_id);
-	glDeleteShader(frag_shader_id);
-	glUseProgram(program_id);
+	Shader shader("vert.glsl", "frag.glsl");
+	shader.use();
 
 	// VAO 
 	unsigned int vert_array_id;
@@ -146,6 +97,8 @@ int main() {
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 
+	Uniform uniform = shader.get_uniform("our_colour");
+
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
 		glClearColor(0.0, 0.0, 0.0, 1.0);
@@ -155,8 +108,7 @@ int main() {
 		float time = glfwGetTime();
 		float greeness = (sin(time) / 2.0) + 0.5;
 		float blueness = (cos(time) / 2.0) + 0.5;
-		int uniform_location = glGetUniformLocation(program_id, "our_colour");
-		glUniform4f(uniform_location, 0.0, greeness, blueness, 1.0);
+		uniform.send(0.0, greeness, blueness, 1.0);
 
 		// Assumes correct program and VAO bound
 		glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
