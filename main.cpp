@@ -147,7 +147,14 @@ int main() {
 		glClearColor(0.0, 0.0, 0.0, 1.0);
 		glClear(GL_COLOR_BUFFER_BIT);
 
+		// Uniform (assumes correct shader program bound)
+		float time = glfwGetTime();
+		float greeness = (sin(time) / 2.0) + 0.5;
+		float blueness = (cos(time) / 2.0) + 0.5;
+		int uniform_location = glGetUniformLocation(program_id, "our_colour");
+		glUniform4f(uniform_location, 0.0, greeness, blueness, 1.0);
 
+		// Assumes correct program and VAO bound
 		glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
 
 		glfwSwapBuffers(window);		
