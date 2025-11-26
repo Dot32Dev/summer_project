@@ -1,6 +1,6 @@
 #version 330 core
 out vec4 frag_colour;
-
+in vec2 uv;
 uniform vec4 our_colour;
 
 void main() {

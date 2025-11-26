@@ -49,9 +49,10 @@ int main() {
 
 	// Triangle
 	float tri_vertices[] = {
-		-0.5, -0.5, 0.0,
-		0.5,  -0.5, 0.0,
-		0.0,  0.5,  0.0,
+		// Positions     // UVs
+		0.5,  -0.5, 0.0, 0.5,  -0.5, // Bottom right
+		-0.5, -0.5, 0.0, -0.5, -0.5, // Bottom left
+		0.0,  0.5,  0.0, 0.0,  0.5   // Top
 	};
 	unsigned int tri_indices[] {
 		0, 1, 2,
@@ -59,10 +60,11 @@ int main() {
 
 	// Square
 	float square_vertices[] = {
-		0.5, 0.5, 0.0, // Top right
-		0.5, -0.5, 0.0, // Bottom right
-		-0.5, -0.5, 0.0, // Bottom left
-		-0.5, 0.5, 0.0 // Top left
+		// Positions     // UVs
+		 0.5,  0.5, 0.0,  0.5,  0.5, // Top right
+		 0.5, -0.5, 0.0,  0.5, -0.5, // Bottom right
+		-0.5, -0.5, 0.0, -0.5, -0.5, // Bottom left
+		-0.5,  0.5, 0.0  -0.5,  0.5  // Top left
 	};
 	unsigned int square_indices[] {
 		0, 1, 3,
@@ -139,8 +141,10 @@ int main() {
 	glBindBuffer(GL_ARRAY_BUFFER, vert_buff_id);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_buffer_id);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
