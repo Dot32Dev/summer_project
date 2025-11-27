@@ -17,14 +17,6 @@ using std::map;
 
 class Uniform {
 	public:
-		/// @brief Constructor for a uniform
-		/// Requires access to a shader program id, which only the Shader class
-		/// has access to. Instead, use the shader's get_uniform function to
-		/// return a Uniform object.
-		/// @param program_id An internal ID used by OpenGL and the Shader class
-		/// @param uniform // The name of the uniform to send
-		Uniform(unsigned int program_id, const string& uniform);
-
 		// C++ has function overloading :)
 		// Assumes the relevant shader is currently bound
 		// Not going to individually doc comment these for taking too much space
@@ -37,6 +29,8 @@ class Uniform {
 		void send(int arg1, int arg2);
 		void send(int arg1);
 	private:
+		friend class Shader; // So that only the shader may construct Uniforms
+		Uniform(unsigned int program_id, const string& uniform);
 		Uniform();
 		int uniform_location;
 };

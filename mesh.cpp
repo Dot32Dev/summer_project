@@ -8,6 +8,10 @@ using std::iota;
 Mesh::Mesh(vector<float> vertices, vector<unsigned int> indices) : 
 	num_indices(indices.size()) 
 {
+	// VAO 
+	glGenVertexArrays(1, &vao_id);
+	glBindVertexArray(vao_id);
+
 	// Vertex buffer
 	unsigned int vert_buff_id;
 	glGenBuffers(1, &vert_buff_id);
@@ -30,16 +34,24 @@ Mesh::Mesh(vector<float> vertices, vector<unsigned int> indices) :
 		GL_STATIC_DRAW
 	);
 
-	// VAO 
-	glGenVertexArrays(1, &vao_id);
-	glBindVertexArray(vao_id);
-	glBindBuffer(GL_ARRAY_BUFFER, vert_buff_id);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_buffer_id);
-
 	// Vertex layout
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+	glVertexAttribPointer( // Vertex position
+		0, // Location
+		3, // Number of values
+		GL_FLOAT, 
+		GL_FALSE, 
+		5 * sizeof(float), // Stride
+		(void*)0 // Offset from start
+	);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer( // UV coordinate
+		1, 
+		2, 
+		GL_FLOAT, 
+		GL_FALSE, 
+		5 * sizeof(float), 
+		(void*)(3 * sizeof(float))
+	);
 	glEnableVertexAttribArray(1);
 
 	// Unbind

@@ -53,7 +53,8 @@ Shader::Shader(const string& vertex_path, const string& fragment_path) {
 		int success;
 		glGetShaderiv(frag_shader_id, GL_COMPILE_STATUS, &success);
 		if (!success) {
-			char err[1024]; glGetShaderInfoLog(frag_shader_id, 1024, NULL, err);
+			char err[1024]; 
+			glGetShaderInfoLog(frag_shader_id, 1024, NULL, err);
 			cerr << "Fragment shader error:\n" << err << endl;
 		}
 
@@ -70,7 +71,8 @@ Shader::Shader(const string& vertex_path, const string& fragment_path) {
 	int success;
 	glGetProgramiv(program_id, GL_LINK_STATUS, &success);
     if (!success) {
-        char infoLog[1024]; glGetProgramInfoLog(program_id, 1024, NULL, infoLog);
+        char infoLog[1024]; 
+		glGetProgramInfoLog(program_id, 1024, NULL, infoLog);
         std::cerr << "Shader program link error:\n" << infoLog << endl;
     }
 }
