@@ -10,6 +10,10 @@ using std::vector;
 const GLint WIDTH = 1280;
 const GLint HEIGHT = 720;
 
+void resize(GLFWwindow* window, int width, int height) {
+	glViewport(0, 0, width, height);
+}
+
 int main() {
 	if (!glfwInit()) {
 		glfwTerminate();
@@ -41,6 +45,7 @@ int main() {
 	}
 
 	glViewport(0, 0, bufferWidth, bufferHeight);
+	glfwSetFramebufferSizeCallback(window, resize);
 
 	// Square
 	vector<float> square_vertices = {
