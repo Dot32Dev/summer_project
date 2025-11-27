@@ -4,8 +4,11 @@ using std::cerr;
 using std::endl;
 
 map<string, unsigned int> Shader::shaders;
+unsigned int* Shader::shader_in_use;
 
-Shader::Shader(const string& vertex_path, const string& fragment_path) {
+Shader::Shader(const string& vertex_path, const string& fragment_path) : 
+	allocated_textures(map<int, int>())
+{
 	unsigned int vert_shader_id;
 	if (shaders.count(vertex_path) > 0) {
 		vert_shader_id = shaders[vertex_path];
@@ -80,45 +83,75 @@ Shader::Shader(const string& vertex_path, const string& fragment_path) {
 Shader::Shader() {}
 
 void Shader::use() {
+	shader_in_use = &program_id;
 	glUseProgram(program_id);
 }
 
 Uniform Shader::get_uniform(const string& uniform) {
-	return Uniform(program_id, uniform);
+	return Uniform(program_id, uniform, this);
 }
 
-Uniform::Uniform(unsigned int program_id, const string& uniform) : 
-	uniform_location(glGetUniformLocation(program_id, uniform.c_str()))
+Uniform::Uniform(
+	unsigned int program_id, 
+	const string& uniform, 
+	Shader* shader
+) : 
+	uniform_location(glGetUniformLocation(program_id, uniform.c_str())),
+	shader(shader)
 {}
 
 void Uniform::send(float arg1, float arg2, float arg3, float arg4) {
+	int inactive = shader->program_id != *shader->shader_in_use; 
+	if (inactive) { glUseProgram(shader->program_id); }
 	glUniform4f(uniform_location, arg1, arg2, arg3, arg4);
+	if (inactive) { glUseProgram(*shader->shader_in_use); }
 }
 
 void Uniform::send(float arg1, float arg2, float arg3) {
+	int inactive = shader->program_id != *shader->shader_in_use; 
+	if (inactive) { glUseProgram(shader->program_id); }
 	glUniform3f(uniform_location, arg1, arg2, arg3);
+	if (inactive) { glUseProgram(*shader->shader_in_use); }
 }
 
 void Uniform::send(float arg1, float arg2) {
+	int inactive = shader->program_id != *shader->shader_in_use; 
+	if (inactive) { glUseProgram(shader->program_id); }
 	glUniform2f(uniform_location, arg1, arg2);
+	if (inactive) { glUseProgram(*shader->shader_in_use); }
 }
 
 void Uniform::send(float arg1) {
+	int inactive = shader->program_id != *shader->shader_in_use; 
+	if (inactive) { glUseProgram(shader->program_id); }
 	glUniform1f(uniform_location, arg1);
+	if (inactive) { glUseProgram(*shader->shader_in_use); }
 }
 
 void Uniform::send(int arg1, int arg2, int arg3, int arg4) {
+	int inactive = shader->program_id != *shader->shader_in_use; 
+	if (inactive) { glUseProgram(shader->program_id); }
 	glUniform4i(uniform_location, arg1, arg2, arg3, arg4);
+	if (inactive) { glUseProgram(*shader->shader_in_use); }
 }
 
 void Uniform::send(int arg1, int arg2, int arg3) {
+	int inactive = shader->program_id != *shader->shader_in_use; 
+	if (inactive) { glUseProgram(shader->program_id); }
 	glUniform3i(uniform_location, arg1, arg2, arg3);
+	if (inactive) { glUseProgram(*shader->shader_in_use); }
 }
 
 void Uniform::send(int arg1, int arg2) {
+	int inactive = shader->program_id != *shader->shader_in_use; 
+	if (inactive) { glUseProgram(shader->program_id); }
 	glUniform2i(uniform_location, arg1, arg2);
+	if (inactive) { glUseProgram(*shader->shader_in_use); }
 }
 
 void Uniform::send(int arg1) {
+	int inactive = shader->program_id != *shader->shader_in_use; 
+	if (inactive) { glUseProgram(shader->program_id); }
 	glUniform1i(uniform_location, arg1);
+	if (inactive) { glUseProgram(*shader->shader_in_use); }
 }
