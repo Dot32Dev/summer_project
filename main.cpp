@@ -4,6 +4,9 @@
 #include "shader.h"
 #include "mesh.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
 using std::vector;
 
 const GLint WIDTH = 1280;
@@ -43,11 +46,11 @@ int main() {
 
 	// Square
 	vector<float> square_vertices = {
-		// Positions     // UVs
-		 0.5 + 0.1,  0.5 + 0.1, 0.0 + 0.1,  0.5 + 0.1,  0.5 + 0.1, // Top right
-		 0.5 + 0.1, -0.5 + 0.1, 0.0 + 0.1,  0.5 + 0.1, -0.5 + 0.1, // Bottom right
-		-0.5 + 0.1, -0.5 + 0.1, 0.0 + 0.1, -0.5 + 0.1, -0.5 + 0.1, // Bottom left
-		-0.5 + 0.1,  0.5 + 0.1, 0.0 + 0.1, -0.5 + 0.1,  0.5 + 0.1  // Top left
+		// Positions      // UVs
+		 0.5,  0.5, 0.0,  1.0, 1.0, // Top right
+		 0.5, -0.5, 0.0,  1.0, 0.0, // Bottom right
+		-0.5, -0.5, 0.0,  0.0, 0.0, // Bottom left
+		-0.5,  0.5, 0.0,  0.0, 1.0  // Top left
 	};
 	vector<unsigned int> square_indices = {
 		0, 1, 3,
@@ -57,17 +60,33 @@ int main() {
 
 	// Triangle
 	vector<float> tri_vertices = {
-		// Positions     // UVs
-		 0.5, -0.5, 0.0,  0.5, -0.5, // Bottom right
-		-0.5, -0.5, 0.0, -0.5, -0.5, // Bottom left
-		 0.0,  0.5, 0.0,  0.0,  0.5  // Top
+		// Positions      // UVs
+		 0.5, -0.5, 0.0,  1.0,  0.0, // Bottom right
+		-0.5, -0.5, 0.0,  0.0,  0.0, // Bottom left
+		 0.0,  0.5, 0.0,  0.5,  1.0  // Top
 	};
 	Mesh triangle(tri_vertices);
 
-	Shader shader("vert.glsl", "frag.glsl");
+	Shader shader("res/vert.glsl", "res/frag.glsl");
 	shader.use();
 
 	Uniform uniform = shader.get_uniform("our_colour");
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	int width, height, num_channels;
+	unsigned char* data = stbi_load("res/man.jpg", &width, &height, &num_channels, 0);
+	// if no data, should probably print a message
+	unsigned int texture;
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture); // Stays bound for drawing
+	// should probably use the format that matches that channels rather than RGB
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+	glGenerateMipmap(GL_TEXTURE_2D);
+	stbi_image_free(data);
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();

@@ -11,7 +11,7 @@ Shader::Shader(const string& vertex_path, const string& fragment_path) {
 		vert_shader_id = shaders[vertex_path];
 	} else {
 		// Load from file
-		ifstream file("vert.glsl");
+		ifstream file(vertex_path);
 		stringstream buffer;
 		buffer << file.rdbuf();
 		string shader_string = buffer.str();
@@ -38,7 +38,7 @@ Shader::Shader(const string& vertex_path, const string& fragment_path) {
 		frag_shader_id = shaders[fragment_path];
 	} else {
 		// Load from file
-		ifstream file("frag.glsl");
+		ifstream file(fragment_path);
 		stringstream buffer;
 		buffer << file.rdbuf();
 		string shader_string = buffer.str();
@@ -58,7 +58,7 @@ Shader::Shader(const string& vertex_path, const string& fragment_path) {
 			cerr << "Fragment shader error:\n" << err << endl;
 		}
 
-		shaders[fragment_path] = vert_shader_id;
+		shaders[fragment_path] = frag_shader_id;
 	}
 
 	// Compile shader program
