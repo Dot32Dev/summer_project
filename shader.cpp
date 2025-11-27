@@ -155,3 +155,26 @@ void Uniform::send(int arg1) {
 	glUniform1i(uniform_location, arg1);
 	if (inactive) { glUseProgram(*shader->shader_in_use); }
 }
+
+void Uniform::send(Texture& texture) {
+	int inactive = shader->program_id != *shader->shader_in_use; 
+	if (inactive) { glUseProgram(shader->program_id); }
+
+	// Stores uniform location to texure binding
+	if (shader->allocated_textures.count(uniform_location) == 0) {
+		int count = shader->allocated_textures.size();
+		shader->allocated_textures[uniform_location] = count;
+	}
+	int binding = shader->allocated_textures[uniform_location];
+
+	if (binding > 15) {
+		cerr << "Some graphics cards do not support this many textures" << endl;
+	}
+
+	glActiveTexture(GL_TEXTURE0 + binding);
+	glBindTexture(GL_TEXTURE_2D, texture.texture_id);
+
+	glUniform1i(uniform_location, binding);
+
+	if (inactive) { glUseProgram(*shader->shader_in_use); }
+}

@@ -3,9 +3,7 @@
 #include <vector>
 #include "shader.h"
 #include "mesh.h"
-
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include "texture.h"
 
 using std::vector;
 
@@ -70,23 +68,11 @@ int main() {
 	Shader shader("res/vert.glsl", "res/frag.glsl");
 	shader.use();
 
+	Texture man = Texture::from_image("res/man.jpg");
+	Texture dot32 = Texture::from_image("res/revector_reveal_clean.png");
+	Uniform texture_uniform = shader.get_uniform("our_texture");
+
 	Uniform uniform = shader.get_uniform("our_colour");
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	int width, height, num_channels;
-	unsigned char* data = stbi_load("res/man.jpg", &width, &height, &num_channels, 0);
-	// if no data, should probably print a message
-	unsigned int texture;
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture); // Stays bound for drawing
-	// should probably use the format that matches that channels rather than RGB
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-	glGenerateMipmap(GL_TEXTURE_2D);
-	stbi_image_free(data);
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
@@ -94,14 +80,15 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		uniform.send(1.0f, 0.5f, 0.2f, 1.0f);
+		texture_uniform.send(dot32);
 		square.draw();
 
-		// Uniform (assumes correct shader program bound)
 		float time = glfwGetTime();
 		float greeness = (sin(time) / 2.0) + 0.5;
 		float blueness = (cos(time) / 2.0) + 0.5;
-		uniform.send(0.0, greeness, blueness, 1.0);
 
+		uniform.send(0.0, greeness, blueness, 1.0);
+		texture_uniform.send(man);
 		triangle.draw();
 
 		glfwSwapBuffers(window);		
