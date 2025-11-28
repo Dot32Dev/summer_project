@@ -4,6 +4,8 @@
 #include "shader.h"
 #include "mesh.h"
 #include "texture.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 using std::vector;
 
@@ -60,6 +62,7 @@ int main() {
 		1, 2, 3
 	};
 	Mesh square(square_vertices, square_indices);
+	glm::mat4 square_trans = glm::mat4(1.0);
 
 	// Triangle
 	vector<float> tri_vertices = {
@@ -69,6 +72,7 @@ int main() {
 		 0.0,  0.5, 0.0,  0.5,  1.0  // Top
 	};
 	Mesh triangle(tri_vertices);
+	glm::mat4 triangle_trans = glm::mat4(1.0);
 
 	Shader shader("res/vert.glsl", "res/frag.glsl");
 	shader.use();
@@ -77,23 +81,30 @@ int main() {
 	Texture dot32 = Texture::from_image("res/revector_reveal_clean.png");
 	Uniform texture_uniform = shader.get_uniform("our_texture");
 
-	Uniform uniform = shader.get_uniform("our_colour");
+	Uniform colour_uniform = shader.get_uniform("our_colour");
+	Uniform transform_uniform = shader.get_uniform("transform");
+
+	glm::vec3 rotation_axis = glm::vec3(0.0, 0.0, 1.0);
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
 		glClearColor(0.0, 0.0, 0.0, 1.0);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		uniform.send(1.0f, 0.5f, 0.2f, 1.0f);
+		triangle_trans = glm::rotate(triangle_trans, 0.1f, rotation_axis);
+
+		colour_uniform.send(1.0f, 0.5f, 0.2f, 1.0f);
 		texture_uniform.send(dot32);
+		transform_uniform.send(square_trans);
 		square.draw();
 
 		float time = glfwGetTime();
 		float greeness = (sin(time) / 2.0) + 0.5;
 		float blueness = (cos(time) / 2.0) + 0.5;
 
-		uniform.send(0.0, greeness, blueness, 1.0);
+		colour_uniform.send(0.0, greeness, blueness, 1.0);
 		texture_uniform.send(man);
+		transform_uniform.send(triangle_trans);
 		triangle.draw();
 
 		glfwSwapBuffers(window);		

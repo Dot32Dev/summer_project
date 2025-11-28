@@ -8,6 +8,7 @@
 #include <map>
 #include <GL/glew.h>
 #include "texture.h"
+#include <glm/glm.hpp>
 
 using std::ifstream;
 using std::stringstream;
@@ -28,6 +29,7 @@ class Uniform {
 		void send(int arg1, int arg2);
 		void send(int arg1);
 		void send(Texture& texture);
+		void send(glm::mat4& matrix);
 	private:
 		friend class Shader; // So that only the shader may construct Uniforms
 		Uniform(unsigned int program_id, const string& uniform, Shader* shader);
