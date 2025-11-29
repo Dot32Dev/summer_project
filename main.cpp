@@ -12,8 +12,13 @@ using std::vector;
 const GLint WIDTH = 1280;
 const GLint HEIGHT = 720;
 
+Uniform* projection_uniform_pointer;
+
 void resize(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
+	glm::mat4 projection = glm::mat4(1.0);
+	projection = glm::perspective(glm::radians(90.0f), (float)width/height, 0.1f, 100.0f);
+	projection_uniform_pointer->send(projection);
 }
 
 int main() {
@@ -87,6 +92,7 @@ int main() {
 	Uniform model_uniform = shader.get_uniform("model");
 	Uniform view_uniform = shader.get_uniform("view");
 	Uniform projection_uniform = shader.get_uniform("projection");
+	projection_uniform_pointer = &projection_uniform;
 
 	glm::vec3 rotation_axis = glm::vec3(0.0, 1.0, 1.0);
 
