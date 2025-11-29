@@ -48,6 +48,7 @@ int main() {
 
 	glViewport(0, 0, bufferWidth, bufferHeight);
 	glfwSetFramebufferSizeCallback(window, resize);
+	glEnable(GL_DEPTH_TEST);
 
 	// Square
 	vector<float> square_vertices = {
@@ -63,6 +64,7 @@ int main() {
 	};
 	Mesh square(square_vertices, square_indices);
 	glm::mat4 square_trans = glm::mat4(1.0);
+	square_trans = glm::translate(square_trans, glm::vec3(0.0, 0.0, -0.1));
 
 	// Triangle
 	vector<float> tri_vertices = {
@@ -82,20 +84,31 @@ int main() {
 	Uniform texture_uniform = shader.get_uniform("our_texture");
 
 	Uniform colour_uniform = shader.get_uniform("our_colour");
-	Uniform transform_uniform = shader.get_uniform("transform");
+	Uniform model_uniform = shader.get_uniform("model");
+	Uniform view_uniform = shader.get_uniform("view");
+	Uniform projection_uniform = shader.get_uniform("projection");
 
-	glm::vec3 rotation_axis = glm::vec3(0.0, 0.0, 1.0);
+	glm::vec3 rotation_axis = glm::vec3(0.0, 1.0, 1.0);
+
+	glm::mat4 view = glm::mat4(1.0);
+	view = glm::translate(view, glm::vec3(0.0, 0.0, -1.0));
+
+	glm::mat4 projection = glm::mat4(1.0);
+	projection = glm::perspective(glm::radians(90.0f), (float)WIDTH/HEIGHT, 0.1f, 100.0f);
+
+	view_uniform.send(view);
+	projection_uniform.send(projection);
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
 		glClearColor(0.0, 0.0, 0.0, 1.0);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		triangle_trans = glm::rotate(triangle_trans, 0.1f, rotation_axis);
 
 		colour_uniform.send(1.0f, 0.5f, 0.2f, 1.0f);
 		texture_uniform.send(dot32);
-		transform_uniform.send(square_trans);
+		model_uniform.send(square_trans);
 		square.draw();
 
 		float time = glfwGetTime();
@@ -104,7 +117,7 @@ int main() {
 
 		colour_uniform.send(0.0, greeness, blueness, 1.0);
 		texture_uniform.send(man);
-		transform_uniform.send(triangle_trans);
+		model_uniform.send(triangle_trans);
 		triangle.draw();
 
 		glfwSwapBuffers(window);		
