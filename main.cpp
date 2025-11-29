@@ -108,13 +108,20 @@ int main() {
 	// view_uniform.send(view);
 	projection_uniform.send(projection);
 
+	double delta_time = 0.0;
+	double last_frame = 0.0;
+
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
 		glClearColor(0.0, 0.0, 0.0, 1.0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		float movement_speed = 0.03;
-		float rot_speed = 0.03;
+		double current_frame = glfwGetTime();
+		delta_time = current_frame - last_frame;
+		last_frame = current_frame;
+
+		float movement_speed = 1.5 * delta_time;
+		float rot_speed = 1.5 * delta_time;
 		glm::vec3 pos_input = glm::vec3(0.0f, 0.0f, 0.0f);
 		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
 			pos_input += glm::vec3(0.0f, 0.0f, movement_speed);
@@ -158,9 +165,8 @@ int main() {
 		model_uniform.send(square_trans);
 		square.draw();
 
-		float time = glfwGetTime();
-		float greeness = (sin(time) / 2.0) + 0.5;
-		float blueness = (cos(time) / 2.0) + 0.5;
+		float greeness = (sin(current_frame) / 2.0) + 0.5;
+		float blueness = (cos(current_frame) / 2.0) + 0.5;
 
 		colour_uniform.send(0.0, greeness, blueness, 1.0);
 		texture_uniform.send(man);
