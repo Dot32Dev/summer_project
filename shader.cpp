@@ -181,7 +181,7 @@ void Uniform::send(Texture& texture) {
 	if (inactive) { glUseProgram(*shader->shader_in_use); }
 }
 
-void Uniform::send(glm::mat4& matrix) {
+void Uniform::send(const glm::mat4& matrix) {
 	int inactive = shader->program_id != *shader->shader_in_use; 
 	if (inactive) { glUseProgram(shader->program_id); }
 	// transform, number of matrices, transposing, matrix

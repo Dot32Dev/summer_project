@@ -6,13 +6,16 @@
 #include "texture.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include "camera.h"
 
 using std::vector;
 
 const GLint WIDTH = 1280;
 const GLint HEIGHT = 720;
 
+// Globals 
 Uniform* projection_uniform_pointer;
+Camera camera(glm::vec3(0.0f, 0.0f, -1.0f));
 
 void resize(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
@@ -94,15 +97,15 @@ int main() {
 	Uniform projection_uniform = shader.get_uniform("projection");
 	projection_uniform_pointer = &projection_uniform;
 
-	glm::vec3 rotation_axis = glm::vec3(0.0, 1.0, 1.0);
+	glm::vec3 rotation_axis = glm::vec3(0.0f, 1.0f, 1.0f);
 
-	glm::mat4 view = glm::mat4(1.0);
-	view = glm::translate(view, glm::vec3(0.0, 0.0, -1.0));
+	// glm::mat4 view = glm::mat4(1.0);
+	// view = glm::translate(view, glm::vec3(0.0, 0.0, -1.0));
 
 	glm::mat4 projection = glm::mat4(1.0);
 	projection = glm::perspective(glm::radians(90.0f), (float)WIDTH/HEIGHT, 0.1f, 100.0f);
 
-	view_uniform.send(view);
+	// view_uniform.send(view);
 	projection_uniform.send(projection);
 
 	while (!glfwWindowShouldClose(window)) {
@@ -110,26 +113,43 @@ int main() {
 		glClearColor(0.0, 0.0, 0.0, 1.0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		float movement_speed = 0.1;
+		float movement_speed = 0.03;
+		float rot_speed = 0.03;
+		glm::vec3 pos_input = glm::vec3(0.0f, 0.0f, 0.0f);
 		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-			view = glm::translate(view, glm::vec3(0.0, 0.0, movement_speed));
+			pos_input += glm::vec3(0.0f, 0.0f, movement_speed);
 		}
 		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-			view = glm::translate(view, glm::vec3(0.0, 0.0, -movement_speed));
+			pos_input += glm::vec3(0.0f, 0.0f, -movement_speed);
 		}
 		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-			view = glm::translate(view, glm::vec3(movement_speed, 0.0, 0.0));
+			pos_input += glm::vec3(movement_speed, 0.0f, 0.0f);
 		}
 		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-			view = glm::translate(view, glm::vec3(-movement_speed, 0.0, 0.0));
+			pos_input += glm::vec3(-movement_speed, 0.0f, 0.0f);
 		}
 		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-			view = glm::translate(view, glm::vec3(0.0, -movement_speed, 0.0));
+			pos_input += glm::vec3(0.0f, -movement_speed, 0.0f);
 		}
 		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
-			view = glm::translate(view, glm::vec3(0.0, movement_speed, 0.0));
+			pos_input += glm::vec3(0.0f, movement_speed, 0.0f);
 		}
-		view_uniform.send(view);
+		glm::vec2 dir_input = glm::vec2(0.0f, 0.0f);
+		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+			dir_input += glm::vec2(0.0f, -rot_speed);
+		}
+		if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+			dir_input += glm::vec2(0.0f, rot_speed);
+		}
+		if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+			dir_input += glm::vec2(-rot_speed, 0.0f);
+		}
+		if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+			dir_input += glm::vec2(rot_speed, 0.0f);
+		}
+		camera.pos_input(pos_input);
+		camera.dir_input(dir_input);
+		view_uniform.send(camera.get_view_matrix());
 
 		triangle_trans = glm::rotate(triangle_trans, 0.1f, rotation_axis);
 
