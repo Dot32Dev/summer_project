@@ -104,6 +104,27 @@ int main() {
 		glClearColor(0.0, 0.0, 0.0, 1.0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		float movement_speed = 0.1;
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+			view = glm::translate(view, glm::vec3(0.0, 0.0, movement_speed));
+		}
+		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+			view = glm::translate(view, glm::vec3(0.0, 0.0, -movement_speed));
+		}
+		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+			view = glm::translate(view, glm::vec3(movement_speed, 0.0, 0.0));
+		}
+		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+			view = glm::translate(view, glm::vec3(-movement_speed, 0.0, 0.0));
+		}
+		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
+			view = glm::translate(view, glm::vec3(0.0, -movement_speed, 0.0));
+		}
+		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
+			view = glm::translate(view, glm::vec3(0.0, movement_speed, 0.0));
+		}
+		view_uniform.send(view);
+
 		triangle_trans = glm::rotate(triangle_trans, 0.1f, rotation_axis);
 
 		colour_uniform.send(1.0f, 0.5f, 0.2f, 1.0f);
