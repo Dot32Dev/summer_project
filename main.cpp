@@ -20,7 +20,12 @@ Camera camera(glm::vec3(0.0f, 0.0f, -1.0f));
 void resize(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
 	glm::mat4 projection = glm::mat4(1.0);
-	projection = glm::perspective(glm::radians(90.0f), (float)width/height, 0.1f, 100.0f);
+	projection = glm::perspective(
+		glm::radians(90.0f), 
+		(float)width/height, 
+		0.1f, 
+		100.0f
+	);
 	projection_uniform_pointer->send(projection);
 }
 
@@ -36,7 +41,13 @@ int main() {
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	
-	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Summer project", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(
+		WIDTH, 
+		HEIGHT, 
+		"Summer project", 
+		NULL, 
+		NULL
+	);
 	if (!window) {
 		glfwTerminate();
 		return 2;
@@ -103,7 +114,12 @@ int main() {
 	// view = glm::translate(view, glm::vec3(0.0, 0.0, -1.0));
 
 	glm::mat4 projection = glm::mat4(1.0);
-	projection = glm::perspective(glm::radians(90.0f), (float)WIDTH/HEIGHT, 0.1f, 100.0f);
+	projection = glm::perspective(
+		glm::radians(90.0f), 
+		(float)WIDTH/HEIGHT, 
+		0.1f, 
+		100.0f
+	);
 
 	// view_uniform.send(view);
 	projection_uniform.send(projection);
