@@ -1,3 +1,6 @@
+#ifndef MESH_H
+#define MESH_H
+
 #include <vector>
 
 using std::vector;
@@ -24,3 +27,5 @@ class Mesh {
 		int num_indices;
 		unsigned int vao_id; 
 };
+
+#endif
