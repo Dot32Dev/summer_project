@@ -30,7 +30,7 @@ struct VertexKey {
 	Normal norm;
 };
 
-// Stupid ass fucking C++ holy shit
+// Stupid C++
 // You have to define all this just to use a hashmap
 template <class T>
 inline void hash_combine(size_t& seed, const T& v) {
