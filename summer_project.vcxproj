@@ -145,12 +145,14 @@
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mesh.cpp" />
+    <ClCompile Include="obj_importer.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h" />
     <ClInclude Include="mesh.h" />
+    <ClInclude Include="obj_importer.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="texture.h" />
   </ItemGroup>

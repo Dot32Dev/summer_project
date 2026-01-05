@@ -1,12 +1,13 @@
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include <vector>
 #include "shader.h"
 #include "mesh.h"
 #include "texture.h"
+#include "camera.h"
+#include "obj_importer.h"
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+#include <vector>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include "camera.h"
 
 using std::vector;
 
@@ -95,11 +96,16 @@ int main() {
 	Mesh triangle(tri_vertices);
 	glm::mat4 triangle_trans = glm::mat4(1.0);
 
+	// Character
+	vector<Mesh> character = obj_importer("res/Player/model.obj");
+	glm::mat4 character_trans = glm::mat4(1.0);
+
 	Shader shader("res/vert.glsl", "res/frag.glsl");
 	shader.use();
 
 	Texture man = Texture::from_image("res/man.jpg");
 	Texture dot32 = Texture::from_image("res/revector_reveal_clean.png");
+	Texture player = Texture::from_image("res/Player/texture.png");
 	Uniform texture_uniform = shader.get_uniform("our_texture");
 
 	Uniform colour_uniform = shader.get_uniform("our_colour");
@@ -188,6 +194,13 @@ int main() {
 		texture_uniform.send(man);
 		model_uniform.send(triangle_trans);
 		triangle.draw();
+
+		colour_uniform.send(1.0f, 1.0f, 1.0f, 1.0f);
+		texture_uniform.send(player);
+		model_uniform.send(character_trans);
+		for (int i = 0; i < character.size(); i++) {
+			character[i].draw();
+		}
 
 		glfwSwapBuffers(window);		
 	}
