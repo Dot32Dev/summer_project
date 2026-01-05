@@ -161,7 +161,6 @@ vector<Mesh> obj_importer(const string& obj_path) {
 				int current_vertex;
 				if (vertex_hash.count(vertex) == 1) {
 					current_vertex = vertex_hash[vertex];
-					std::cout << "saved memory" << std::endl;
 				} else {
 					current_vertex = next_index ++;
 					vertex_hash[vertex] = current_vertex;
@@ -190,6 +189,11 @@ vector<Mesh> obj_importer(const string& obj_path) {
 			}
 		}
 	}
+
+	int bytes_with_indexing = vertex_data.size() * 4 + index_data.size() * 4;
+	int bytes_default = index_data.size() * 5 * 4;
+	std::cout << "Bytes with indexing: " << bytes_with_indexing << std::endl;
+	std::cout << "Bytes without indexing: " << bytes_default << std::endl;
 
 	Mesh mesh = Mesh(vertex_data, index_data);
 	vector<Mesh> meshes = vector<Mesh>();

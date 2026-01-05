@@ -135,7 +135,7 @@ int main() {
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
-		glClearColor(0.0, 0.0, 0.0, 1.0);
+		glClearColor(0.1, 0.1, 0.1, 1.0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		double current_frame = glfwGetTime();
@@ -180,20 +180,20 @@ int main() {
 		camera.dir_input(dir_input);
 		view_uniform.send(camera.get_view_matrix());
 
-		triangle_trans = glm::rotate(triangle_trans, 0.1f, rotation_axis);
+		// triangle_trans = glm::rotate(triangle_trans, 0.1f, rotation_axis);
 
-		colour_uniform.send(1.0f, 0.5f, 0.2f, 1.0f);
-		texture_uniform.send(dot32);
-		model_uniform.send(square_trans);
-		square.draw();
+		// colour_uniform.send(1.0f, 0.5f, 0.2f, 1.0f);
+		// texture_uniform.send(dot32);
+		// model_uniform.send(square_trans);
+		// square.draw();
 
-		float greeness = (sin(current_frame) / 2.0) + 0.5;
-		float blueness = (cos(current_frame) / 2.0) + 0.5;
+		// float greeness = (sin(current_frame) / 2.0) + 0.5;
+		// float blueness = (cos(current_frame) / 2.0) + 0.5;
 
-		colour_uniform.send(0.0, greeness, blueness, 1.0);
-		texture_uniform.send(man);
-		model_uniform.send(triangle_trans);
-		triangle.draw();
+		// colour_uniform.send(0.0, greeness, blueness, 1.0);
+		// texture_uniform.send(man);
+		// model_uniform.send(triangle_trans);
+		// triangle.draw();
 
 		colour_uniform.send(1.0f, 1.0f, 1.0f, 1.0f);
 		texture_uniform.send(player);
