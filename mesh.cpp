@@ -40,7 +40,7 @@ Mesh::Mesh(vector<float> vertices, vector<unsigned int> indices) :
 		3, // Number of values
 		GL_FLOAT, 
 		GL_FALSE, 
-		5 * sizeof(float), // Stride
+		8 * sizeof(float), // Stride
 		(void*)0 // Offset from start
 	);
 	glEnableVertexAttribArray(0);
@@ -49,10 +49,19 @@ Mesh::Mesh(vector<float> vertices, vector<unsigned int> indices) :
 		2, 
 		GL_FLOAT, 
 		GL_FALSE, 
-		5 * sizeof(float), 
+		8 * sizeof(float), 
 		(void*)(3 * sizeof(float))
 	);
 	glEnableVertexAttribArray(1);
+	glVertexAttribPointer( // Normal
+		2,
+		3,
+		GL_FLOAT, 
+		GL_FALSE, 
+		8 * sizeof(float),
+		(void*)(5 * sizeof(float))
+	);
+	glEnableVertexAttribArray(2);
 
 	// Unbind
 	glBindVertexArray(0); 

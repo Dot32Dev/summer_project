@@ -169,9 +169,9 @@ vector<Mesh> obj_importer(const string& obj_path) {
 					vertex_data.push_back(vertex.pos.z);
 					vertex_data.push_back(vertex.tex_coord.u);
 					vertex_data.push_back(vertex.tex_coord.v);
-					// vertex_data.push_back(vertex.norm.x);
-					// vertex_data.push_back(vertex.norm.y);
-					// vertex_data.push_back(vertex.norm.z);
+					vertex_data.push_back(vertex.norm.x);
+					vertex_data.push_back(vertex.norm.y);
+					vertex_data.push_back(vertex.norm.z);
 				}
 
 				if (first_vertex == -1) first_vertex = current_vertex;
@@ -191,7 +191,7 @@ vector<Mesh> obj_importer(const string& obj_path) {
 	}
 
 	int bytes_with_indexing = vertex_data.size() * 4 + index_data.size() * 4;
-	int bytes_default = index_data.size() * 5 * 4;
+	int bytes_default = index_data.size() * 8 * 4;
 	std::cout << "Bytes with indexing: " << bytes_with_indexing << std::endl;
 	std::cout << "Bytes without indexing: " << bytes_default << std::endl;
 
