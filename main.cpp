@@ -114,6 +114,11 @@ int main() {
 
 		float movement_speed = 1.5 * delta_time;
 		float rot_speed = 1.5 * delta_time;
+
+		if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
+			movement_speed *= 2.0;
+		}
+
 		glm::vec3 pos_input = glm::vec3(0.0f, 0.0f, 0.0f);
 		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
 			pos_input += glm::vec3(0.0f, 0.0f, -movement_speed);
