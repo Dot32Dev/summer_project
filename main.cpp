@@ -16,7 +16,6 @@ const GLint HEIGHT = 720;
 
 // Globals 
 Uniform* projection_uniform_pointer;
-Camera camera(glm::vec3(0.0f, 0.0f, -1.0f));
 
 void resize(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
@@ -69,6 +68,9 @@ int main() {
 	glViewport(0, 0, bufferWidth, bufferHeight);
 	glfwSetFramebufferSizeCallback(window, resize);
 	glEnable(GL_DEPTH_TEST);
+
+	// Camera
+	Camera camera(glm::vec3(0.0f, 0.0f, -1.0f));
 
 	// Character
 	vector<Mesh> character = obj_importer("res/Player/model.obj");
