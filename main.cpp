@@ -70,7 +70,7 @@ int main() {
 	glEnable(GL_DEPTH_TEST);
 
 	// Camera
-	Camera camera(glm::vec3(0.0f, 0.0f, -1.0f));
+	Camera camera(glm::vec3(0.0f, 1.8f, 3.0f));
 
 	// Character
 	vector<Mesh> character = obj_importer("res/Player/model.obj");
@@ -116,22 +116,22 @@ int main() {
 		float rot_speed = 1.5 * delta_time;
 		glm::vec3 pos_input = glm::vec3(0.0f, 0.0f, 0.0f);
 		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-			pos_input += glm::vec3(0.0f, 0.0f, movement_speed);
-		}
-		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
 			pos_input += glm::vec3(0.0f, 0.0f, -movement_speed);
 		}
-		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-			pos_input += glm::vec3(movement_speed, 0.0f, 0.0f);
+		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+			pos_input += glm::vec3(0.0f, 0.0f, movement_speed);
 		}
-		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
 			pos_input += glm::vec3(-movement_speed, 0.0f, 0.0f);
 		}
+		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+			pos_input += glm::vec3(movement_speed, 0.0f, 0.0f);
+		}
 		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-			pos_input += glm::vec3(0.0f, -movement_speed, 0.0f);
+			pos_input += glm::vec3(0.0f, movement_speed, 0.0f);
 		}
 		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
-			pos_input += glm::vec3(0.0f, movement_speed, 0.0f);
+			pos_input += glm::vec3(0.0f, -movement_speed, 0.0f);
 		}
 		glm::vec2 dir_input = glm::vec2(0.0f, 0.0f);
 		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {

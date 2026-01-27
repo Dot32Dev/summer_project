@@ -16,7 +16,9 @@ glm::mat4 Camera::get_view_matrix() {
 	glm::vec3 yaw_axis = glm::vec3(0.0f, 1.0f, 0.0f);
 	matrix = glm::rotate(matrix, dir.x, yaw_axis);
 	// Translate by the camera's pos
-	matrix = glm::translate(matrix, pos);
+	// I found that negating it made the camera position more natural, e.g a 
+	// position of Y=10 should put you up in the air, not below the ground
+	matrix = glm::translate(matrix, -pos);
 	return matrix;
 }
 
