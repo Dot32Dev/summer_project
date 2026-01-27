@@ -70,41 +70,13 @@ int main() {
 	glfwSetFramebufferSizeCallback(window, resize);
 	glEnable(GL_DEPTH_TEST);
 
-	// Square
-	vector<float> square_vertices = {
-		// Positions      // UVs
-		 0.5,  0.5, 0.0,  1.0, 1.0, // Top right
-		 0.5, -0.5, 0.0,  1.0, 0.0, // Bottom right
-		-0.5, -0.5, 0.0,  0.0, 0.0, // Bottom left
-		-0.5,  0.5, 0.0,  0.0, 1.0  // Top left
-	};
-	vector<unsigned int> square_indices = {
-		0, 1, 3,
-		1, 2, 3
-	};
-	Mesh square(square_vertices, square_indices);
-	glm::mat4 square_trans = glm::mat4(1.0);
-	square_trans = glm::translate(square_trans, glm::vec3(0.0, 0.0, -0.1));
-
-	// Triangle
-	vector<float> tri_vertices = {
-		// Positions      // UVs
-		 0.5, -0.5, 0.0,  1.0,  0.0, // Bottom right
-		-0.5, -0.5, 0.0,  0.0,  0.0, // Bottom left
-		 0.0,  0.5, 0.0,  0.5,  1.0  // Top
-	};
-	Mesh triangle(tri_vertices);
-	glm::mat4 triangle_trans = glm::mat4(1.0);
-
 	// Character
 	vector<Mesh> character = obj_importer("res/Player/model.obj");
 	glm::mat4 character_trans = glm::mat4(1.0);
 
 	Shader shader("res/vert.glsl", "res/frag.glsl");
-	shader.use();
+	shader.use(); 
 
-	Texture man = Texture::from_image("res/man.jpg");
-	Texture dot32 = Texture::from_image("res/revector_reveal_clean.png");
 	Texture player = Texture::from_image("res/Player/texture.png");
 	Uniform texture_uniform = shader.get_uniform("our_texture");
 
@@ -116,9 +88,6 @@ int main() {
 
 	glm::vec3 rotation_axis = glm::vec3(0.0f, 1.0f, 1.0f);
 
-	// glm::mat4 view = glm::mat4(1.0);
-	// view = glm::translate(view, glm::vec3(0.0, 0.0, -1.0));
-
 	glm::mat4 projection = glm::mat4(1.0);
 	projection = glm::perspective(
 		glm::radians(90.0f), 
@@ -127,7 +96,6 @@ int main() {
 		100.0f
 	);
 
-	// view_uniform.send(view);
 	projection_uniform.send(projection);
 
 	double delta_time = 0.0;
@@ -179,21 +147,6 @@ int main() {
 		camera.pos_input(pos_input);
 		camera.dir_input(dir_input);
 		view_uniform.send(camera.get_view_matrix());
-
-		// triangle_trans = glm::rotate(triangle_trans, 0.1f, rotation_axis);
-
-		// colour_uniform.send(1.0f, 0.5f, 0.2f, 1.0f);
-		// texture_uniform.send(dot32);
-		// model_uniform.send(square_trans);
-		// square.draw();
-
-		// float greeness = (sin(current_frame) / 2.0) + 0.5;
-		// float blueness = (cos(current_frame) / 2.0) + 0.5;
-
-		// colour_uniform.send(0.0, greeness, blueness, 1.0);
-		// texture_uniform.send(man);
-		// model_uniform.send(triangle_trans);
-		// triangle.draw();
 
 		colour_uniform.send(1.0f, 1.0f, 1.0f, 1.0f);
 		texture_uniform.send(player);

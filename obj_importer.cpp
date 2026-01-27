@@ -61,6 +61,7 @@ inline bool operator==(const VertexKey& a, const VertexKey& b) {
         a.tex_coord.u == b.tex_coord.u && a.tex_coord.v == b.tex_coord.v &&
         a.norm.x == b.norm.x && a.norm.y == b.norm.y && a.norm.z == b.norm.z;
 }
+// End of C++ shenanigans
 
 vector<Mesh> obj_importer(const string& obj_path) {
 	ifstream file = ifstream(obj_path);
