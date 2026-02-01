@@ -73,13 +73,13 @@ int main() {
 	Camera camera(glm::vec3(0.0f, 1.8f, 3.0f));
 
 	// Character
-	vector<Mesh> character = obj_importer("res/Player/model.obj");
+	vector<Mesh> character = obj_importer("res/Player/Player.obj");
 	glm::mat4 character_trans = glm::mat4(1.0);
 
 	Shader shader("res/vert.glsl", "res/frag.glsl");
 	shader.use(); 
 
-	Texture player = Texture::from_image("res/Player/texture.png");
+	Texture player = Texture::from_image("res/Player/Player.png");
 	Uniform texture_uniform = shader.get_uniform("our_texture");
 
 	Uniform colour_uniform = shader.get_uniform("our_colour");

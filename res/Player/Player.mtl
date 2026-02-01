@@ -1,4 +1,4 @@
-# Blender 3.2.1 MTL File: 'let him cook.blend'
+# Blender 3.2.1 MTL File: 'Player.blend'
 # www.blender.org
 
 newmtl bake
@@ -10,4 +10,4 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd texture.png
+map_Kd Player.png
