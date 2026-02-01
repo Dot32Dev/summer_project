@@ -70,7 +70,7 @@ int main() {
 	glEnable(GL_DEPTH_TEST);
 
 	// Camera
-	Camera camera(glm::vec3(0.0f, 1.8f, 3.0f));
+	Camera camera(glm::vec3(0.0f, 1.5f, 2.0f));
 
 	// Character
 	vector<Mesh> character = obj_importer("res/Player/Player.obj");
