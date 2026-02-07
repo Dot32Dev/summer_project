@@ -79,8 +79,21 @@ vector<Mesh> obj_importer(const string& obj_path) {
 	// The final data sent to the Mesh builder
 	vector<float> vertex_data;
 	vector<unsigned int> index_data;
+	// All of the individual objects within the OBJ file
+	vector<Mesh> meshes = vector<Mesh>();
 
+	// If a vertex has not yet been defined, it must be allocated an index in 
+	// the hashmap.
 	int next_index = 0;
+
+	// When a new object begins, all of the old vertices are cleared, and new 
+	// vertices are added from vertex zero. However, vertex indices in the file
+	// still point to global indices. For this reason, after starting a new 
+	// object, we must subtract the previous number of vertices from the file's
+	// index to get the current index in our vector.
+	int vertex_index_offset = 0;
+	int tex_coord_index_offset = 0;
+	int normal_index_offset = 0;
 
 	string line;
 	while (getline(file, line)) {
@@ -90,7 +103,27 @@ vector<Mesh> obj_importer(const string& obj_path) {
 
 		// New object being defined
 		if (field == "o") {
+			if (vertex_data.size() > 0) {
+				// Add the previous object to the objects vector
+				Mesh mesh = Mesh(vertex_data, index_data);
+				meshes.push_back(mesh);
 
+				// The new object's indices starts at the current offsets
+				vertex_index_offset += temp_vertices.size();
+				tex_coord_index_offset += temp_tex_coords.size() - 1;
+				normal_index_offset += temp_normals.size() - 1;
+
+				// Reset all temporary data used for the previous object
+				temp_vertices.clear();
+				temp_tex_coords.clear();
+				temp_normals.clear();
+				temp_tex_coords.push_back(TexCoord {0.0, 0.0});
+				temp_normals.push_back(Normal {0.0, 1.0, 0.0});
+				vertex_data.clear();
+				index_data.clear();
+				vertex_hash.clear();
+				next_index = 0;
+			}
 		}
 		// Vertex position
 		if (field == "v") {
@@ -138,15 +171,21 @@ vector<Mesh> obj_importer(const string& obj_path) {
 						if (i == 0) {
 							// Indexes in OBJ files are 1-based. We subtract one
 							// to convert it to zero based
-							vertex.pos = temp_vertices[index - 1];
+							vertex.pos = temp_vertices[
+								index - 1 - vertex_index_offset
+							];
 						}
 						if (i == 1) {
 							// We don't convert this to zero based as we added
 							// a 0, 0 texture coordinate as the 0th item.
-							vertex.tex_coord = temp_tex_coords[index];
+							vertex.tex_coord = temp_tex_coords[
+								index - tex_coord_index_offset
+							];
 						}
 						if (i == 2) {
-							vertex.norm = temp_normals[index];
+							vertex.norm = temp_normals[
+								index - normal_index_offset
+							];
 							// defined_normals = true;
 						}
 
@@ -191,13 +230,7 @@ vector<Mesh> obj_importer(const string& obj_path) {
 		}
 	}
 
-	int bytes_with_indexing = vertex_data.size() * 4 + index_data.size() * 4;
-	int bytes_default = index_data.size() * 8 * 4;
-	std::cout << "Bytes with indexing: " << bytes_with_indexing << std::endl;
-	std::cout << "Bytes without indexing: " << bytes_default << std::endl;
-
 	Mesh mesh = Mesh(vertex_data, index_data);
-	vector<Mesh> meshes = vector<Mesh>();
 	meshes.push_back(mesh);
 	return meshes;
 }
