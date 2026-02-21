@@ -63,10 +63,11 @@ inline bool operator==(const VertexKey& a, const VertexKey& b) {
 }
 // End of C++ shenanigans
 
-vector<Mesh> obj_importer(const string& obj_path) {
+vector<Object> obj_importer(const string& obj_path) {
 	ifstream file = ifstream(obj_path);
 	if (!file) throw std::invalid_argument("Could not read file: " + obj_path);
 
+	string name = "";
 	// Used when the OBJ file later references indices to things
 	vector<Position> temp_vertices = vector<Position>();
 	vector<TexCoord> temp_tex_coords = vector<TexCoord>();
@@ -80,7 +81,7 @@ vector<Mesh> obj_importer(const string& obj_path) {
 	vector<float> vertex_data;
 	vector<unsigned int> index_data;
 	// All of the individual objects within the OBJ file
-	vector<Mesh> meshes = vector<Mesh>();
+	vector<Object> meshes = vector<Object>();
 
 	// If a vertex has not yet been defined, it must be allocated an index in 
 	// the hashmap.
@@ -106,7 +107,11 @@ vector<Mesh> obj_importer(const string& obj_path) {
 			if (vertex_data.size() > 0) {
 				// Add the previous object to the objects vector
 				Mesh mesh = Mesh(vertex_data, index_data);
-				meshes.push_back(mesh);
+				meshes.push_back(Object {name, mesh});
+
+				// Get the new object's name
+				getline(line_stream, field);
+				name = field;
 
 				// The new object's indices starts at the current offsets
 				vertex_index_offset += temp_vertices.size();
@@ -231,6 +236,6 @@ vector<Mesh> obj_importer(const string& obj_path) {
 	}
 
 	Mesh mesh = Mesh(vertex_data, index_data);
-	meshes.push_back(mesh);
+	meshes.push_back(Object {name, mesh});
 	return meshes;
 }
