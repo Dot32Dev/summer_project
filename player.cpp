@@ -3,7 +3,7 @@
 #include "object.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <iostream>
+// #include <iostream>
 
 Player::Player(Uniform* transform_uniform) : 
 	nodes(vector<Node>()),
@@ -16,24 +16,22 @@ Player::Player(Uniform* transform_uniform) :
 
 	vector<Object> joints = obj_importer("res/Player/Joints.obj");
 	for (int i=0; i<joints.size(); i++) {
-		float x, y, z;
-		joints[i].get_avg_vertex_pos(&x, &y, &z);
-		nodes.push_back(Node {vec3(x, y, z), vec3(x, y, z)});
+		vec3 centre = joints[i].mean_centre();
+		nodes.push_back(Node {centre, centre});
 		node_names.insert({joints[i].get_name(), i});
 	}
 
 	vector<Object> objects = obj_importer("res/Player/Player.obj");
 	for (int i=0; i<objects.size(); i++) {
-		float x, y, z;
-		objects[i].get_avg_vertex_pos(&x, &y, &z);
+		vec3 centre = objects[i].mean_centre();
 		glm::mat4 transform = glm::mat4(1.0);
 		transform = glm::translate(
 			transform, 
-			glm::vec3((float)-x + (float)i * 0.2, (float)-y, (float)-z)
+			vec3((float)i * 0.2, .0f, .0f) - centre
 		);
 		objects[i].transform(transform);
-		objects[i].get_avg_vertex_pos(&x, &y, &z);
-		std::cout << "x: " << x << " y: " << y << " z: " << z << std::endl;
+		centre = objects[i].mean_centre();
+		// std::cout << "x: " << centre.x << " y: " << centre.y << " z: " << centre.z << std::endl;
 		meshes.push_back(objects[i].to_mesh());
 	}
 }

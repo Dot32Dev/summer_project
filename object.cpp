@@ -24,18 +24,17 @@ string Object::get_name() const {
 	return name;
 }
 
-void Object::get_avg_vertex_pos(float* out_x, float* out_y, float* out_z) const {
-	float x = 0, y = 0, z = 0;
+vec3 Object::mean_centre() const {
+	vec3 sum = vec3(.0f, .0f, .0f);
 	int vertex_count = vertices.size() / FLOATS_PER_VERTEX;
 	for (int i = 0; i < vertex_count; i++) {
-		x += vertices[i * 8];
-		y += vertices[i * 8 + 1];
-		z += vertices[i * 8 + 2];
+		sum += vec3(
+			vertices[i * 8], 
+			vertices[i * 8 + 1],
+			vertices[i * 8 + 2]
+		);
 	}
-
-	*out_x = x / vertex_count;
-	*out_y = y / vertex_count;
-	*out_z = z / vertex_count;
+	return sum / (float)vertex_count;
 }
 
 void Object::transform(const glm::mat4& matrix) {

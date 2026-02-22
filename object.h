@@ -6,6 +6,8 @@
 #include <glm/glm.hpp>
 
 using std::string;
+using glm::mat4;
+using glm::vec3;
 
 /// The object class exists as an intermediary between loading the object and 
 /// sending it to the GPU to be drawn. This lets the loader include object names
@@ -45,15 +47,12 @@ class Object {
 		string get_name() const;
 
 		/// @brief Get the average position of each vertex in the object
-		/// The value is returned via pointers
-		/// @param out_x Will set the float at this address to the average x pos
-		/// @param out_y Will set the float at this address to the average y pos
-		/// @param out_z Will set the float at this address to the average z pos
-		void get_avg_vertex_pos(float* out_x, float* out_y, float* out_z) const;
+		/// @return The average vertex position or mean centre 
+		vec3 mean_centre() const;
 
 		/// @brief Transform every vertex in the model by a matrix
 		/// @param matrix The matrix to transform by
-		void transform(const glm::mat4& matrix);
+		void transform(const mat4& matrix);
 	private:
 		string name;
 		vector<float> vertices; 
