@@ -3,19 +3,17 @@
 
 #include <vector>
 #include <string>
-#include "mesh.h"
+#include "object.h"
 
 using std::vector;
 using std::string;
 
-/// @brief An object contained within an OBJ file
-/// Each object has a name and mesh associated with it
-struct Object {
-	string Name;
-	Mesh mesh;
-};
-
-/// @brief  Load an OBJ file from filepath
+/// @brief Load an OBJ file from filepath
+/// The output of the loader is a vector of objects. These objects 
+/// retain name and vertex data info and can have operations performed on them.
+/// In order to draw, a mesh must be generated from an object. Meshes are stored
+/// on the GPU and therefore cannot be modified after creation, nor can the
+/// vertices or name of a mesh be seen.
 /// @param obj_path The filepath to load
 /// @return A vector of objects contained within the file
 vector<Object> obj_importer(const string& obj_path);

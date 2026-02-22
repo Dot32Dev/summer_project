@@ -75,6 +75,10 @@ int main() {
 	// Character
 	vector<Object> character = obj_importer("res/Player/Player.obj");
 	glm::mat4 character_trans = glm::mat4(1.0);
+	vector<Mesh> character_mesh;
+	for (int i=0; i<character.size(); i++) {
+		character_mesh.push_back(character[i].to_mesh());
+	}
 
 	Shader shader("res/vert.glsl", "res/frag.glsl");
 	shader.use(); 
@@ -159,7 +163,7 @@ int main() {
 		texture_uniform.send(player);
 		model_uniform.send(character_trans);
 		for (int i = 0; i < character.size(); i++) {
-			character[i].mesh.draw();
+			character_mesh[i].draw();
 		}
 
 		glfwSwapBuffers(window);		

@@ -9,7 +9,7 @@ class Mesh {
 	public:
 		/// @brief Constructs a mesh from vectors of vertices and indices
 		/// The vertices vector must conform to the vertex layout of three
-		/// floats for position and two floats for texture coordinate.
+		/// floats for position, two for texture coordinate + three for normals.
 		/// @param vertices The vertices to construct from
 		/// @param indices The indices to construct from
 		Mesh(vector<float> vertices, vector<unsigned int> indices);

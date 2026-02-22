@@ -1,5 +1,4 @@
 #include "obj_importer.h"
-#include "mesh.h"
 #include <fstream>
 #include <string>
 #include <sstream>
@@ -106,8 +105,8 @@ vector<Object> obj_importer(const string& obj_path) {
 		if (field == "o") {
 			if (vertex_data.size() > 0) {
 				// Add the previous object to the objects vector
-				Mesh mesh = Mesh(vertex_data, index_data);
-				meshes.push_back(Object {name, mesh});
+				
+				meshes.push_back(Object(name, vertex_data, index_data));
 
 				// Get the new object's name
 				getline(line_stream, field);
@@ -235,7 +234,7 @@ vector<Object> obj_importer(const string& obj_path) {
 		}
 	}
 
-	Mesh mesh = Mesh(vertex_data, index_data);
-	meshes.push_back(Object {name, mesh});
+	
+	meshes.push_back(Object(name, vertex_data, index_data));
 	return meshes;
 }
