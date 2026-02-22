@@ -21,7 +21,7 @@ class Mesh {
 		Mesh(vector<float> vertices);
 
 		/// @brief Draws the mesh
-		void draw();
+		void draw() const;
 	private:
 		Mesh();
 		int num_indices;

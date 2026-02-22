@@ -3,6 +3,7 @@
 #include "texture.h"
 #include "camera.h"
 #include "obj_importer.h"
+#include "player.h"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <vector>
@@ -73,17 +74,12 @@ int main() {
 	Camera camera(glm::vec3(0.0f, 1.5f, 2.0f));
 
 	// Character
-	vector<Object> character = obj_importer("res/Player/Player.obj");
 	glm::mat4 character_trans = glm::mat4(1.0);
-	vector<Mesh> character_mesh;
-	for (int i=0; i<character.size(); i++) {
-		character_mesh.push_back(character[i].to_mesh());
-	}
 
 	Shader shader("res/vert.glsl", "res/frag.glsl");
 	shader.use(); 
 
-	Texture player = Texture::from_image("res/Player/Player.png");
+	Texture player_texture = Texture::from_image("res/Player/Player.png");
 	Uniform texture_uniform = shader.get_uniform("our_texture");
 
 	Uniform colour_uniform = shader.get_uniform("our_colour");
@@ -91,6 +87,8 @@ int main() {
 	Uniform view_uniform = shader.get_uniform("view");
 	Uniform projection_uniform = shader.get_uniform("projection");
 	projection_uniform_pointer = &projection_uniform;
+
+	Player player = Player(&model_uniform);
 
 	glm::vec3 rotation_axis = glm::vec3(0.0f, 1.0f, 1.0f);
 
@@ -160,12 +158,9 @@ int main() {
 		view_uniform.send(camera.get_view_matrix());
 
 		colour_uniform.send(1.0f, 1.0f, 1.0f, 1.0f);
-		texture_uniform.send(player);
+		texture_uniform.send(player_texture);
 		model_uniform.send(character_trans);
-		for (int i = 0; i < character.size(); i++) {
-			character_mesh[i].draw();
-		}
-
+		player.draw();
 		glfwSwapBuffers(window);		
 	}
 

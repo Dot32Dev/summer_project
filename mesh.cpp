@@ -76,7 +76,7 @@ Mesh::Mesh(vector<float> vertices) {
 
 Mesh::Mesh() {}
 
-void Mesh::draw() {
+void Mesh::draw() const {
 	glBindVertexArray(vao_id);
 	glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_INT, 0);
 }
