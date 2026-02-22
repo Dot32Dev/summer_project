@@ -13,8 +13,8 @@ using std::string;
 
 /// @brief A physics node generally representing a joint on the player
 struct Node {
-	int x, y, z;
-	int pre_x, pre_y, pre_z;
+	float x, y, z;
+	float pre_x, pre_y, pre_z;
 };
 
 /// @brief  Represents a segment connecting two joints, a distance constraint

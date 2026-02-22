@@ -1,8 +1,9 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
-#include <string>
 #include "mesh.h"
+#include <string>
+#include <glm/glm.hpp>
 
 using std::string;
 
@@ -45,10 +46,14 @@ class Object {
 
 		/// @brief Get the average position of each vertex in the object
 		/// The value is returned via pointers
-		/// @param out_x Will set the int at this address to the average x pos
-		/// @param out_y Will set the int at this address to the average y pos
-		/// @param out_z Will set the int at this address to the average z pos
-		void get_average_vertex_pos(int* out_x, int* out_y, int* out_z) const;
+		/// @param out_x Will set the float at this address to the average x pos
+		/// @param out_y Will set the float at this address to the average y pos
+		/// @param out_z Will set the float at this address to the average z pos
+		void get_avg_vertex_pos(float* out_x, float* out_y, float* out_z) const;
+
+		/// @brief Transform every vertex in the model by a matrix
+		/// @param matrix The matrix to transform by
+		void transform(const glm::mat4& matrix);
 	private:
 		string name;
 		vector<float> vertices; 
