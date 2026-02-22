@@ -6,22 +6,25 @@
 #include <map>
 #include <vector>
 #include <string>
+#include <glm/glm.hpp>
 
 using std::vector;
 using std::map;
 using std::string;
+using glm::vec3;
+using glm::length;
 
 /// @brief A physics node generally representing a joint on the player
 struct Node {
-	float x, y, z;
-	float pre_x, pre_y, pre_z;
+	vec3 pos;
+	vec3 prev_pos;
 };
 
 /// @brief  Represents a segment connecting two joints, a distance constraint
 struct Segment {
 	int start_idx;
 	int end_idx;
-	int length;
+	float length;
 };
 
 /// @brief The player, also handles verlet integration ragdoll physics
@@ -42,9 +45,14 @@ class Player {
 		void draw() const;
 	private:
 		Player(); // Forbid construction without uniform
+		void add_segment(int joint_start, int joint_end, int model);
+		void add_segment(int joint_start, int joint_end);
 		vector<Node> nodes;
-		map<string, int> node_names; // To lookup a node index with its name
+		vector<Segment> segments;
 		vector<Mesh> meshes;
+		// E.g the first item in this vector represents which segment index the
+		// first mesh should be connected to
+		vector<int> segment_ids;
 		Uniform* transform_uniform;
 };
 
